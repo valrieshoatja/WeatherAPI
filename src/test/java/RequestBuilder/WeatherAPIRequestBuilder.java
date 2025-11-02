@@ -110,8 +110,20 @@ public class WeatherAPIRequestBuilder {
                 .then().log().all().extract().response();
         return response;
     }
-
+    //  Duplicate external_id
+    public static Response RegisterStation_DuplicateExternalId(String existingExternalId, String name, double latitude, double longitude, int altitude) {
+        Response response = given()
+                .baseUri(WeatherBaseURl)
+                .queryParam("appid", API_KEY)
+                .contentType("application/json")
+                .body(WeatherAPIPayloadBuilder.duplicateExternalIdPayload(existingExternalId, name, latitude, longitude, altitude))
+                .log().all()
+                .post()
+                .then().log().all().extract().response();
+        return response;
     }
+}
+
 
 
 

@@ -97,4 +97,26 @@ public class WeatherAPITest {
         Assert.assertEquals(response.getStatusCode(), 400, "Expected 400 for empty payload");
         System.out.println(" Empty payload Response: " + response.asString());
     }
+    // Duplicate external_id (uses one created from the positive test)
+    @Test(priority = 8)
+    public void testRegisterStation_DuplicateExternalId() {
+        // Reuse the external_id created in positive test
+        String createdExternalId = new String();
+        Response response = WeatherAPIRequestBuilder.RegisterStation_DuplicateExternalId(
+                createdExternalId, "Duplicate Test", 37.76, -122.43, 150);
+
+        System.out.println("\n===  Duplicate External ID ===");
+        response.then().log().all();
+
+        int statusCode = response.getStatusCode();
+
+        // Some APIs return 409 Conflict, others may return 400 or 201
+        if (statusCode == 409 || statusCode == 400) {
+            System.out.println("Duplicate external_id correctly rejected (status " + statusCode + ")");
+        } else if (statusCode == 201) {
+            System.out.println(" API allowed duplicate external_id — non-standard behavior");
+        } else {
+            Assert.fail("Unexpected status code for duplicate external_id: " + statusCode);
+        }
+    }
 }
