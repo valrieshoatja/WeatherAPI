@@ -4,8 +4,9 @@ import org.json.JSONObject;
 
 public class WeatherAPIPayloadBuilder {
 
-    //  POSITIVE PAYLOAD
-
+    // -----------------------------
+    // POSITIVE PAYLOAD: Create / Update Station
+    // -----------------------------
     public static JSONObject updateStationPayload(
             String externalId,
             String name,
@@ -16,18 +17,19 @@ public class WeatherAPIPayloadBuilder {
         // Create new JSON object
         JSONObject jsonObject = new JSONObject();
 
-        // Add all fields
-        jsonObject.put("external_id", externalId);   // External ID
+        // Add all fields dynamically
+        jsonObject.put("external_id", externalId);   // External ID (must be unique)
         jsonObject.put("name", name);                // Station name
-        jsonObject.put("latitude", latitude);        // Latitude
-        jsonObject.put("longitude", longitude);      // Longitude
-        jsonObject.put("altitude", altitude);        // Altitude
+        jsonObject.put("latitude", latitude);        // Latitude (-90 to 90)
+        jsonObject.put("longitude", longitude);      // Longitude (-180 to 180)
+        jsonObject.put("altitude", altitude);        // Altitude in meters
 
         // Print the payload for logging
-        System.out.println("Positive Payload: " + jsonObject.toString());
+        System.out.println(" Positive Payload: " + jsonObject.toString());
 
         return jsonObject;
     }
+
 
     //NEGATIVE PAYLOADS
 
