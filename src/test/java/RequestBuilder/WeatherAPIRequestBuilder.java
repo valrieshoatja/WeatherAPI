@@ -49,6 +49,21 @@ public class WeatherAPIRequestBuilder {
                 .then().log().all().extract().response();
         return response;
     }
+    // Missing station name
+    public static Response RegisterStation_MissingName(String externalId, double latitude, double longitude, int altitude) {
+        Response response = given()
+                .baseUri(WeatherBaseURl)
+                .queryParam("appid", API_KEY)
+                .contentType("application/json")
+                .body(WeatherAPIPayloadBuilder.missingNamePayload(externalId, latitude, longitude, altitude))
+                .log().all()
+                .post()
+                .then().log().all().extract().response();
+        return response;
+    }
 
 
-}
+    }
+
+
+

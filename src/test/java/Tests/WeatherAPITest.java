@@ -58,4 +58,12 @@ public class WeatherAPITest {
         // Print response body for analysis
         System.out.println("Response Body: " + response.asString());
     }
+    // Missing  station name
+    @Test(priority = 2)
+    public void testRegisterStation_MissingName() {
+        Response response = WeatherAPIRequestBuilder.RegisterStation_MissingName(
+                "MISSING_NAME_001", 37.76, -122.43, 150);
+        Assert.assertEquals(response.getStatusCode(), 400, "Expected 400 for missing name");
+        System.out.println(" Missing name Response: " + response.asString());
+    }
 }
