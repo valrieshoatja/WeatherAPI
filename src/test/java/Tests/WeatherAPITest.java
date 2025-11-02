@@ -66,4 +66,12 @@ public class WeatherAPITest {
         Assert.assertEquals(response.getStatusCode(), 400, "Expected 400 for missing name");
         System.out.println(" Missing name Response: " + response.asString());
     }
+    //  Invalid latitude (string instead of number)
+    @Test(priority = 3)
+    public void testRegisterStation_InvalidLatitude() {
+        Response response = WeatherAPIRequestBuilder.RegisterStation_InvalidLatitude(
+                "INVALID_LAT_001", "Invalid Latitude", "invalid_latitude", -122.43, 150);
+        Assert.assertEquals(response.getStatusCode(), 400, "Expected 400 for invalid latitude type");
+        System.out.println(" Invalid latitude Response: " + response.asString());
+    }
 }

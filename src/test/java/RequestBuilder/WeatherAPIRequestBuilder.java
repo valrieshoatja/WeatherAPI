@@ -61,7 +61,18 @@ public class WeatherAPIRequestBuilder {
                 .then().log().all().extract().response();
         return response;
     }
-
+    // Invalid latitude (string instead of number)
+    public static Response RegisterStation_InvalidLatitude(String externalId, String name, String invalidLatitude, double longitude, int altitude) {
+        Response response = given()
+                .baseUri(WeatherBaseURl)
+                .queryParam("appid", API_KEY)
+                .contentType("application/json")
+                .body(WeatherAPIPayloadBuilder.invalidLatitudePayload(externalId, name, invalidLatitude, longitude, altitude))
+                .log().all()
+                .post()
+                .then().log().all().extract().response();
+        return response;
+    }
 
     }
 
