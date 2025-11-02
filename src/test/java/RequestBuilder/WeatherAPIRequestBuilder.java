@@ -86,6 +86,18 @@ public class WeatherAPIRequestBuilder {
                 .then().log().all().extract().response();
         return response;
     }
+    // Negative altitude
+    public static Response RegisterStation_NegativeAltitude(String externalId, String name, double latitude, double longitude, int negativeAltitude) {
+        Response response = given()
+                .baseUri(WeatherBaseURl)
+                .queryParam("appid", API_KEY)
+                .contentType("application/json")
+                .body(WeatherAPIPayloadBuilder.negativeAltitudePayload(externalId, name, latitude, longitude, negativeAltitude))
+                .log().all()
+                .post()
+                .then().log().all().extract().response();
+        return response;
+    }
 
     }
 

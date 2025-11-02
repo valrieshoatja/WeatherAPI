@@ -82,4 +82,12 @@ public class WeatherAPITest {
         Assert.assertEquals(response.getStatusCode(), 400, "Expected 400 for invalid longitude");
         System.out.println(" Invalid longitude Response: " + response.asString());
     }
+    //  Negative altitude
+    @Test(priority = 5)
+    public void testRegisterStation_NegativeAltitude() {
+        Response response = WeatherAPIRequestBuilder.RegisterStation_NegativeAltitude(
+                "NEG_ALT_001", "Negative Altitude", 37.76, -122.43, -50);
+        Assert.assertEquals(response.getStatusCode(), 400, "Expected 400 for negative altitude");
+        System.out.println(" Negative altitude Response: " + response.asString());
+    }
 }
