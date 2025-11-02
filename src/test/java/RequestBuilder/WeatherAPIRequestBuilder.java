@@ -74,6 +74,19 @@ public class WeatherAPIRequestBuilder {
         return response;
     }
 
+    // Invalid longitude (out of range)
+    public static Response RegisterStation_InvalidLongitude(String externalId, String name, double latitude, double invalidLongitude, int altitude) {
+        Response response = given()
+                .baseUri(WeatherBaseURl)
+                .queryParam("appid", API_KEY)
+                .contentType("application/json")
+                .body(WeatherAPIPayloadBuilder.invalidLongitudePayload(externalId, name, latitude, invalidLongitude, altitude))
+                .log().all()
+                .post()
+                .then().log().all().extract().response();
+        return response;
+    }
+
     }
 
 

@@ -74,4 +74,12 @@ public class WeatherAPITest {
         Assert.assertEquals(response.getStatusCode(), 400, "Expected 400 for invalid latitude type");
         System.out.println(" Invalid latitude Response: " + response.asString());
     }
+    //Invalid longitude (out of valid range)
+    @Test(priority = 4)
+    public void testRegisterStation_InvalidLongitude() {
+        Response response = WeatherAPIRequestBuilder.RegisterStation_InvalidLongitude(
+                "INVALID_LONG_001", "Invalid Longitude", 37.76, 200.00, 150);
+        Assert.assertEquals(response.getStatusCode(), 400, "Expected 400 for invalid longitude");
+        System.out.println(" Invalid longitude Response: " + response.asString());
+    }
 }
