@@ -98,6 +98,18 @@ public class WeatherAPIRequestBuilder {
                 .then().log().all().extract().response();
         return response;
     }
+    // Empty payload
+    public static Response RegisterStation_EmptyPayload() {
+        Response response = given()
+                .baseUri(WeatherBaseURl)
+                .queryParam("appid", API_KEY)
+                .contentType("application/json")
+                .body(WeatherAPIPayloadBuilder.emptyPayload())
+                .log().all()
+                .post()
+                .then().log().all().extract().response();
+        return response;
+    }
 
     }
 

@@ -90,4 +90,11 @@ public class WeatherAPITest {
         Assert.assertEquals(response.getStatusCode(), 400, "Expected 400 for negative altitude");
         System.out.println(" Negative altitude Response: " + response.asString());
     }
+    //  Empty payload
+    @Test(priority = 6)
+    public void testRegisterStation_EmptyPayload() {
+        Response response = WeatherAPIRequestBuilder.RegisterStation_EmptyPayload();
+        Assert.assertEquals(response.getStatusCode(), 400, "Expected 400 for empty payload");
+        System.out.println(" Empty payload Response: " + response.asString());
+    }
 }
