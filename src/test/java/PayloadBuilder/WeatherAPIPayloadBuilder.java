@@ -7,7 +7,7 @@ public class WeatherAPIPayloadBuilder {
     // -----------------------------
     // POSITIVE PAYLOAD: Create / Update Station
     // -----------------------------
-    public static JSONObject updateStationPayload(
+    public static JSONObject registerStationPayload(
             String externalId,
             String name,
             double latitude,

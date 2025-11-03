@@ -22,7 +22,7 @@ public class WeatherAPIRequestBuilder {
                 .baseUri(WeatherBaseURl)
                 .contentType("application/json")
                 .queryParam("appid", API_KEY)
-                .body(WeatherAPIPayloadBuilder.updateStationPayload(
+                .body(WeatherAPIPayloadBuilder.registerStationPayload(
                         externalId, name, latitude, longitude, altitude
                 ).toString()) // <-- IMPORTANT: Convert JSONObject to String
                 .log().all()

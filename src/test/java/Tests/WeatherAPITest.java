@@ -59,7 +59,7 @@ public class WeatherAPITest {
         System.out.println("Response Body: " + response.asString());
     }
     // Missing  station name
-    @Test(priority = 2)
+    @Test(priority = 3)
     public void testRegisterStation_MissingName() {
         Response response = WeatherAPIRequestBuilder.RegisterStation_MissingName(
                 "MISSING_NAME_001", 37.76, -122.43, 150);
@@ -67,7 +67,7 @@ public class WeatherAPITest {
         System.out.println(" Missing name Response: " + response.asString());
     }
     //  Invalid latitude (string instead of number)
-    @Test(priority = 3)
+    @Test(priority = 4)
     public void testRegisterStation_InvalidLatitude() {
         Response response = WeatherAPIRequestBuilder.RegisterStation_InvalidLatitude(
                 "INVALID_LAT_001", "Invalid Latitude", "invalid_latitude", -122.43, 150);
@@ -75,7 +75,7 @@ public class WeatherAPITest {
         System.out.println(" Invalid latitude Response: " + response.asString());
     }
     //Invalid longitude (out of valid range)
-    @Test(priority = 4)
+    @Test(priority = 5)
     public void testRegisterStation_InvalidLongitude() {
         Response response = WeatherAPIRequestBuilder.RegisterStation_InvalidLongitude(
                 "INVALID_LONG_001", "Invalid Longitude", 37.76, 200.00, 150);
@@ -83,7 +83,7 @@ public class WeatherAPITest {
         System.out.println(" Invalid longitude Response: " + response.asString());
     }
     //  Negative altitude
-    @Test(priority = 5)
+    @Test(priority = 6)
     public void testRegisterStation_NegativeAltitude() {
         Response response = WeatherAPIRequestBuilder.RegisterStation_NegativeAltitude(
                 "NEG_ALT_001", "Negative Altitude", 37.76, -122.43, -50);
@@ -91,7 +91,7 @@ public class WeatherAPITest {
         System.out.println(" Negative altitude Response: " + response.asString());
     }
     //  Empty payload
-    @Test(priority = 6)
+    @Test(priority = 7)
     public void testRegisterStation_EmptyPayload() {
         Response response = WeatherAPIRequestBuilder.RegisterStation_EmptyPayload();
         Assert.assertEquals(response.getStatusCode(), 400, "Expected 400 for empty payload");
