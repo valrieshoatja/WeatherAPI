@@ -22,6 +22,7 @@ target/
 .settings
 .springBeans
 .sts4-cache
+allure-results/
 
 ### NetBeans ###
 /nbproject/private/
@@ -38,3 +39,7 @@ build/
 
 ### Mac OS ###
 .DS_Store
+# Environment / API keys
+.env
+*.properties
+*.key

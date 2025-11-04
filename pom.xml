@@ -86,6 +86,15 @@
             <version>20211205</version>
         </dependency>
 
+        <!-- Hamcrest (matchers like equalTo used in tests) -->
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest</artifactId>
+            <version>2.2</version>
+            <scope>test</scope>
+        </dependency>
+
+
     </dependencies>
 
         </project>

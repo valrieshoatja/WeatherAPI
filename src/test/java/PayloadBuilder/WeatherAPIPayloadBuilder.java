@@ -5,8 +5,7 @@ import org.json.JSONObject;
 public class WeatherAPIPayloadBuilder {
 
     // -----------------------------
-    // POSITIVE PAYLOAD: Create / Update Station
-    // -----------------------------
+    // POSITIVE PAYLOAD:
     public static JSONObject registerStationPayload(
             String externalId,
             String name,

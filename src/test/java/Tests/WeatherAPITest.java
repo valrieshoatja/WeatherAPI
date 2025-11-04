@@ -10,30 +10,44 @@ public class WeatherAPITest {
 
     //  Store station ID for chaining
 
-    static String stationId;
+    static String stationId; //store id of created station
+    static String createdExternalId; // store external id for duplicate test
 
 
     // POSITIVE TEST
     @Test(priority = 1)
     public void testRegisterStation_Positive() {
-        String uniqueExternalId = "test_station_" + System.currentTimeMillis();
+        // create unique external_id to avoid duplication
+        createdExternalId = "test_station_" + System.currentTimeMillis();
 
         Response response = WeatherAPIRequestBuilder.RegisterStation(
-                uniqueExternalId,      // external_id
+                createdExternalId,      // external_id
                 "San Francisco",       // name
                 37.76,                 // latitude
                 -122.43,               // longitude
                 150                    // altitude
         );
 
-        System.out.println("\n=== POSITIVE TEST RESPONSE ===");
+        System.out.println("\n===  REGISTER STATION RESPONSE ===");
         response.then().log().all();
 
-        // Verify HTTP 201 Created
+        // Check HTTP status
         Assert.assertEquals(response.getStatusCode(), 201, "Expected 201 Created");
 
-        // Extract station ID for chaining
-        stationId = response.jsonPath().getString("id");
+        // Extract and store ID for chaining directly from response
+        String id = null;
+        try {
+            id = response.jsonPath().getString("id");
+        } catch (Exception e) {
+            // ignore, handled below
+        }
+
+        if (id == null || id.isEmpty()) {
+            System.out.println("Response body did not include 'id'. Full response:\n" + response.asString());
+            Assert.fail("Station ID missing in registration response; see console for full response body");
+        }
+
+        stationId = id;
         System.out.println("Created Station ID: " + stationId);
     }
 
@@ -98,10 +112,9 @@ public class WeatherAPITest {
         System.out.println(" Empty payload Response: " + response.asString());
     }
     // Duplicate external_id (uses one created from the positive test)
-    @Test(priority = 8)
+    @Test(priority = 8, dependsOnMethods = {"testRegisterStation_Positive"})
     public void testRegisterStation_DuplicateExternalId() {
         // Reuse the external_id created in positive test
-        String createdExternalId = new String();
         Response response = WeatherAPIRequestBuilder.RegisterStation_DuplicateExternalId(
                 createdExternalId, "Duplicate Test", 37.76, -122.43, 150);
 
@@ -118,5 +131,19 @@ public class WeatherAPITest {
         } else {
             Assert.fail("Unexpected status code for duplicate external_id: " + statusCode);
         }
+    }
+
+    @Test(priority = 9, dependsOnMethods = {"testRegisterStation_Positive"})
+    public void testGetStationById() {
+
+        // Use the lastStationId from the RequestBuilder
+        String stationId = WeatherAPIRequestBuilder.lastStationId;
+        Assert.assertNotNull(stationId, "No station ID found. Ensure a station is registered before this test.");
+
+        Response response = WeatherAPIRequestBuilder.GetStationById(stationId);
+        Assert.assertEquals(response.getStatusCode(), 200, "Expected 200 OK for get station");
+        String fetchedId = response.jsonPath().getString("id");
+        Assert.assertEquals(fetchedId, stationId, "Fetched station ID should match created ID");
+        System.out.println("Fetched Station Details: " + response.asString());
     }
 }
