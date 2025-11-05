@@ -165,5 +165,13 @@ public class WeatherAPITest {
         Assert.assertEquals(response.getStatusCode(), 400, "Expected 400 for null station ID");
         System.out.println("Response for null ID: " + response.getBody().asString());
     }
+    @Test(priority = 12, dependsOnMethods = {"testRegisterStation_Positive"})
+    public void testGetAllStations() {
+        Response response = WeatherAPIRequestBuilder.GetAllStations();
+        Assert.assertEquals(response.getStatusCode(), 200);
 
+        boolean stationFound = response.jsonPath().getList("id").contains(stationId);
+        Assert.assertTrue(stationFound, "Newly registered station not found in station list");
+        System.out.println("Newly registered station is present in all stations list.");
+    }
 }
