@@ -159,5 +159,11 @@ public class WeatherAPITest {
         Response response = WeatherAPIRequestBuilder.GetStationById("invalid_station_id");
         Assert.assertEquals(response.getStatusCode(), 400);
     }
+    @Test(priority = 11)
+    public void testGetStationByNullId() {
+        Response response = WeatherAPIRequestBuilder.GetStationById("null"); // pass string "null"
+        Assert.assertEquals(response.getStatusCode(), 400, "Expected 400 for null station ID");
+        System.out.println("Response for null ID: " + response.getBody().asString());
+    }
 
 }
