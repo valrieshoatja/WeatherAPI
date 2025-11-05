@@ -3,6 +3,8 @@ package Tests;
 import RequestBuilder.WeatherAPIRequestBuilder;
 import io.restassured.response.Response;
 import org.testng.Assert;
+import org.testng.SkipException;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 public class WeatherAPITest {
@@ -13,42 +15,37 @@ public class WeatherAPITest {
     static String stationId; //store id of created station
     static String createdExternalId; // store external id for duplicate test
 
+    @BeforeClass
+    public void ensureApiKeyPresent() {
+        String key = WeatherAPIRequestBuilder.getApiKeyIfPresent();
+        if (key == null || key.isBlank()) {
+            throw new SkipException("OpenWeather API key not set. Set environment variable OPENWEATHER_API_KEY, system property -Dopenweather.api.key=<key>, or add 'openweather.api.key=...' to local.properties in project root to run these tests.");
+        }
+    }
 
     // POSITIVE TEST
     @Test(priority = 1)
     public void testRegisterStation_Positive() {
-        // create unique external_id to avoid duplication
-        createdExternalId = "test_station_" + System.currentTimeMillis();
+        String uniqueExternalId = "test_station_" + System.currentTimeMillis();
 
         Response response = WeatherAPIRequestBuilder.RegisterStation(
-                createdExternalId,      // external_id
-                "San Francisco",       // name
-                37.76,                 // latitude
-                -122.43,               // longitude
-                150                    // altitude
-        );
+                uniqueExternalId, "San Francisco", 37.76, -122.43, 150);
 
-        System.out.println("\n===  REGISTER STATION RESPONSE ===");
+        System.out.println("=== REGISTER STATION RESPONSE ===");
         response.then().log().all();
 
-        // Check HTTP status
         Assert.assertEquals(response.getStatusCode(), 201, "Expected 201 Created");
 
-        // Extract and store ID for chaining directly from response
-        String id = null;
-        try {
-            id = response.jsonPath().getString("id");
-        } catch (Exception e) {
-            // ignore, handled below
+        // ✅ First try lowercase (because JsonPath converts keys to lowercase)
+        String stationId = response.jsonPath().getString("id");
+        if (stationId == null || stationId.isEmpty()) {
+            stationId = response.jsonPath().getString("ID");
         }
 
-        if (id == null || id.isEmpty()) {
-            System.out.println("Response body did not include 'id'. Full response:\n" + response.asString());
-            Assert.fail("Station ID missing in registration response; see console for full response body");
-        }
+        System.out.println("Extracted station ID: " + stationId);
+        Assert.assertNotNull(stationId, "Station ID missing in registration response; see console for full response body");
 
-        stationId = id;
-        System.out.println("Created Station ID: " + stationId);
+        WeatherAPITest.stationId = stationId;
     }
 
     //  NEGATIVE TEST: Missing External ID
@@ -99,10 +96,22 @@ public class WeatherAPITest {
     //  Negative altitude
     @Test(priority = 6)
     public void testRegisterStation_NegativeAltitude() {
-        Response response = WeatherAPIRequestBuilder.RegisterStation_NegativeAltitude(
+        System.out.println("=== Negative Altitude Test ===");
+
+        Response response = WeatherAPIRequestBuilder.RegisterStation(
                 "NEG_ALT_001", "Negative Altitude", 37.76, -122.43, -50);
-        Assert.assertEquals(response.getStatusCode(), 400, "Expected 400 for negative altitude");
-        System.out.println(" Negative altitude Response: " + response.asString());
+
+        response.then().log().all();
+
+        int actualStatus = response.getStatusCode();
+
+        // OpenWeather accepts negative altitudes → expect 201 Created
+        Assert.assertEquals(actualStatus, 201, "Expected success (201) for valid negative altitude");
+
+        // Verify that response still includes station data
+        String name = response.jsonPath().getString("name");
+        Assert.assertEquals(name, "Negative Altitude", "Station name mismatch");
+
     }
     //  Empty payload
     @Test(priority = 7)
@@ -136,8 +145,7 @@ public class WeatherAPITest {
     @Test(priority = 9, dependsOnMethods = {"testRegisterStation_Positive"})
     public void testGetStationById() {
 
-        // Use the lastStationId from the RequestBuilder
-        String stationId = WeatherAPIRequestBuilder.lastStationId;
+        // Use stationId set by the positive test
         Assert.assertNotNull(stationId, "No station ID found. Ensure a station is registered before this test.");
 
         Response response = WeatherAPIRequestBuilder.GetStationById(stationId);
@@ -146,4 +154,10 @@ public class WeatherAPITest {
         Assert.assertEquals(fetchedId, stationId, "Fetched station ID should match created ID");
         System.out.println("Fetched Station Details: " + response.asString());
     }
+    @Test(priority = 10)
+    public void testGetStationByInvalidId() {
+        Response response = WeatherAPIRequestBuilder.GetStationById("invalid_station_id");
+        Assert.assertEquals(response.getStatusCode(), 400);
+    }
+
 }

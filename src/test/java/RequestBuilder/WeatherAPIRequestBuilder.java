@@ -3,20 +3,53 @@ package RequestBuilder;
 import PayloadBuilder.WeatherAPIPayloadBuilder;
 import io.restassured.response.Response;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Properties;
+
 import static io.restassured.RestAssured.given;
 
 
 public class WeatherAPIRequestBuilder {
 
-    private static String getApiKey() {
+    // Return key if present in any supported location, otherwise null
+    private static String findApiKey() {
         String key = System.getenv("OPENWEATHER_API_KEY");
-        if (key == null || key.isBlank()) {
-            key = System.getProperty("openweather.api.key");
+        if (key != null && !key.isBlank()) return key.trim();
+
+        key = System.getProperty("openweather.api.key");
+        if (key != null && !key.isBlank()) return key.trim();
+
+        // Look for local.properties in project root
+        String userDir = System.getProperty("user.dir");
+        File propFile = new File(userDir, "local.properties");
+        if (propFile.exists() && propFile.isFile()) {
+            Properties props = new Properties();
+            try (FileInputStream fis = new FileInputStream(propFile)) {
+                props.load(fis);
+                key = props.getProperty("openweather.api.key");
+                if (key != null && !key.isBlank()) return key.trim();
+            } catch (IOException ignored) {
+                // ignore and fall through to return null
+            }
         }
-        if (key == null || key.isBlank()) {
-            throw new IllegalStateException("OpenWeather API key not set. Set env var OPENWEATHER_API_KEY or pass -Dopenweather.api.key=<key>");
+
+        return null;
+    }
+
+    // Throwing getter kept for existing callers
+    private static String getApiKey() {
+        String key = findApiKey();
+        if (key == null) {
+            throw new IllegalStateException("OpenWeather API key not set. Set env var OPENWEATHER_API_KEY, system property -Dopenweather.api.key=<key>, or add 'openweather.api.key=...' to local.properties in project root.");
         }
         return key;
+    }
+
+    // Public non-throwing helper for tests/other callers to check presence
+    public static String getApiKeyIfPresent() {
+        return findApiKey();
     }
     // Base URL should be host+version; endpoints appended per-request
     public static String WeatherBaseURL = "https://api.openweathermap.org/data/3.0";
@@ -153,6 +186,17 @@ public class WeatherAPIRequestBuilder {
                 .extract().response();
 
         return response;
+    }
+    // Get all stations
+    public static Response GetAllStations() {
+        return given()
+                .baseUri(WeatherBaseURL)
+                .queryParam("appid", getApiKey())
+                .log().all()
+                .get("/stations")
+                .then()
+                .log().all()
+                .extract().response();
     }
 
 

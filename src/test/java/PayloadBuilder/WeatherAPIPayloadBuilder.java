@@ -155,4 +155,15 @@ public class WeatherAPIPayloadBuilder {
 
         return jsonObject;
     }
+    // Positive payload for updating a station
+    public static JSONObject createStationPayload(String externalId, String name, String latitude, String longitude, String altitude) {
+        JSONObject json = new JSONObject();
+        json.put("external_id", externalId); // Unique station ID
+        json.put("name", name); // Station name
+        json.put("latitude", latitude); // Latitude
+        json.put("longitude", longitude); // Longitude
+        json.put("altitude", altitude); // Altitude
+        return json;
+    }
+
 }
