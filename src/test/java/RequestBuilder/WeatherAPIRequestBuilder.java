@@ -247,5 +247,19 @@ public class WeatherAPIRequestBuilder {
 
         return response;
     }
+    // Negative: Empty payload
+    public static Response UpdateStation_EmptyPayload(String stationId) {
+        Response response = given()
+                .baseUri(WeatherBaseURL)
+                .queryParam("appid", getApiKey())
+                .contentType("application/json")
+                .body(WeatherAPIPayloadBuilder.emptyPayload().toString())
+                .log().all()
+                .put("/stations/" + stationId)
+                .then().log().all().extract().response();
+
+        return response;
+    }
+
 
 }

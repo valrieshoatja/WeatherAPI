@@ -209,4 +209,12 @@ public class WeatherAPITest {
         Assert.assertEquals(response.getStatusCode(), 400, "Expected 400 for invalid latitude");
         System.out.println("Invalid latitude update Response: " + response.asString());
     }
+    // Empty payload (negative)
+    @Test(priority = 16)
+    public void testUpdateStation_EmptyPayload() {
+        Response response = WeatherAPIRequestBuilder.UpdateStation_EmptyPayload(stationId);
+
+        Assert.assertEquals(response.getStatusCode(), 400, "Expected 400 for empty update payload");
+        System.out.println("Empty payload update Response: " + response.asString());
+    }
 }
