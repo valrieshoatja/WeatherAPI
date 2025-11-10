@@ -261,5 +261,62 @@ public class WeatherAPIRequestBuilder {
         return response;
     }
 
+    // Negative: Invalid ID ( null)
+    public static Response UpdateStation_InvalidId(String invalidId, String externalId, String name, double latitude, double longitude, int altitude) {
+        Response response = given()
+                .baseUri(WeatherBaseURL)
+                .queryParam("appid", getApiKey())
+                .contentType("application/json")
+                .body(WeatherAPIPayloadBuilder.updateStationPayload(externalId, name, latitude, longitude, altitude).toString())
+                .log().all()
+                .put("/stations/" + invalidId)
+                .then().log().all().extract().response();
 
+        return response;
+    }
+    //  Delete existing station by ID
+    public static Response DeleteStation(String stationId) {
+        System.out.println("Deleting Station ID: " + stationId);
+        Response response = given()
+                .baseUri(WeatherBaseURL)
+                .queryParam("appid", getApiKey())
+                .log().all()
+                .delete("/stations/" + stationId)
+                .then()
+                .log().all()
+                .extract()
+                .response();
+        return response;
+    }
+
+    //  Delete invalid or non-existing station (Negative Test)
+    public static Response DeleteStation_InvalidId(String invalidStationId) {
+        System.out.println("Attempting to Delete Invalid Station ID: " + invalidStationId);
+        Response response = given()
+                .baseUri(WeatherBaseURL)
+                .queryParam("appid", getApiKey())
+                .log().all()
+                .delete("/stations/" + invalidStationId)
+                .then()
+                .log().all()
+                .extract()
+                .response();
+        return response;
+    }
+
+    // ✅ Confirm Deletion (Try to Get the Station again)
+    public static Response ConfirmStationDeleted(String stationId) {
+        System.out.println("Confirming deletion of Station ID: " + stationId);
+        Response response = given()
+                .baseUri(WeatherBaseURL)
+                .queryParam("appid", getApiKey())
+                .log().all()
+                .get("/stations/" + stationId)
+                .then()
+                .log().all()
+                .extract()
+                .response();
+        return response;
+    }
 }
+
