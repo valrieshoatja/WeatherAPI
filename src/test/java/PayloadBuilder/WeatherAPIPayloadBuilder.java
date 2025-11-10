@@ -165,5 +165,26 @@ public class WeatherAPIPayloadBuilder {
         json.put("altitude", altitude); // Altitude
         return json;
     }
+    // UPDATE STATION PAYLOADS
+
+
+    // Positive Update Payload
+    public static JSONObject updateStationPayload(
+            String externalId,
+            String name,
+            double latitude,
+            double longitude,
+            int altitude) {
+
+        JSONObject json = new JSONObject();
+        json.put("external_id", externalId); // Unique station external ID
+        json.put("name", name);              // Updated station name
+        json.put("latitude", latitude);      // Updated latitude
+        json.put("longitude", longitude);    // Updated longitude
+        json.put("altitude", altitude);      // Updated altitude
+
+        System.out.println("Update Station Payload (Positive): " + json.toString());
+        return json;
+    }
 
 }

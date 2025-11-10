@@ -174,4 +174,20 @@ public class WeatherAPITest {
         Assert.assertTrue(stationFound, "Newly registered station not found in station list");
         System.out.println("Newly registered station is present in all stations list.");
     }
+    // Positive test
+    @Test(priority = 13, dependsOnMethods = {"testRegisterStation_Positive"})
+    public void testUpdateStation_Positive() {
+        Assert.assertNotNull(stationId, "Station ID must be set from positive registration test.");
+
+        Response response = WeatherAPIRequestBuilder.UpdateStation(
+                stationId, "UPDATED_EXT_" + System.currentTimeMillis(), "Updated Station Name", 40.71, -74.01, 200);
+
+        System.out.println("\n=== UPDATE STATION POSITIVE ===");
+        response.then().log().all();
+
+        Assert.assertEquals(response.getStatusCode(), 200, "Expected 200 OK for update");
+
+        String updatedName = response.jsonPath().getString("name");
+        Assert.assertEquals(updatedName, "Updated Station Name", "Station name not updated correctly");
+    }
 }

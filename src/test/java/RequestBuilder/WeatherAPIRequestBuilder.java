@@ -198,6 +198,21 @@ public class WeatherAPIRequestBuilder {
                 .log().all()
                 .extract().response();
     }
+   // UPDATE STATION SECTION
+
+    // Positive update — update station name or coordinates
+    public static Response UpdateStation(String stationId, String externalId, String name, double latitude, double longitude, int altitude) {
+        Response response = given()
+                .baseUri(WeatherBaseURL)
+                .queryParam("appid", getApiKey())
+                .contentType("application/json")
+                .body(WeatherAPIPayloadBuilder.updateStationPayload(externalId, name, latitude, longitude, altitude).toString())
+                .log().all()
+                .put("/stations/" + stationId)
+                .then().log().all().extract().response();
+
+        return response;
+    }
 
 
 }
