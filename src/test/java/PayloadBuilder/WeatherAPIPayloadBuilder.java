@@ -198,4 +198,23 @@ public class WeatherAPIPayloadBuilder {
         System.out.println("Update Missing Name Payload: " + json.toString());
         return json;
     }
+
+    //  Invalid latitude (Negative)
+    public static JSONObject updateStationInvalidLatitudePayload(
+            String externalId,
+            String name,
+            String invalidLatitude, // intentionally wrong type
+            double longitude,
+            int altitude) {
+
+        JSONObject json = new JSONObject();
+        json.put("external_id", externalId);
+        json.put("name", name);
+        json.put("latitude", invalidLatitude); // wrong type
+        json.put("longitude", longitude);
+        json.put("altitude", altitude);
+
+        System.out.println("Update Station Payload (Invalid Latitude): " + json.toString());
+        return json;
+    }
 }

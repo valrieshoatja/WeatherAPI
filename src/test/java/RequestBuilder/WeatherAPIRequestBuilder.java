@@ -234,6 +234,18 @@ public class WeatherAPIRequestBuilder {
 
         return response;
     }
+    // Negative: Invalid latitude
+    public static Response UpdateStation_InvalidLatitude(String stationId, String externalId, String name, String invalidLatitude, double longitude, int altitude) {
+        Response response = given()
+                .baseUri(WeatherBaseURL)
+                .queryParam("appid", getApiKey())
+                .contentType("application/json")
+                .body(WeatherAPIPayloadBuilder.updateStationInvalidLatitudePayload(externalId, name, invalidLatitude, longitude, altitude).toString())
+                .log().all()
+                .put("/stations/" + stationId)
+                .then().log().all().extract().response();
 
+        return response;
+    }
 
 }
