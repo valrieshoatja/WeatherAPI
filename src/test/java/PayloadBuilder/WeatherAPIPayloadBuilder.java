@@ -155,6 +155,7 @@ public class WeatherAPIPayloadBuilder {
 
         return jsonObject;
     }
+
     // Positive payload for updating a station
     public static JSONObject createStationPayload(String externalId, String name, String latitude, String longitude, String altitude) {
         JSONObject json = new JSONObject();
@@ -187,4 +188,14 @@ public class WeatherAPIPayloadBuilder {
         return json;
     }
 
+    // Missing name (negative)
+    public static JSONObject updateStationMissingNamePayload(String externalId, double latitude, double longitude, int altitude) {
+        JSONObject json = new JSONObject();
+        json.put("external_id", externalId);
+        json.put("latitude", latitude);
+        json.put("longitude", longitude);
+        json.put("altitude", altitude);
+        System.out.println("Update Missing Name Payload: " + json.toString());
+        return json;
+    }
 }

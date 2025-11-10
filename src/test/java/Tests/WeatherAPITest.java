@@ -190,4 +190,14 @@ public class WeatherAPITest {
         String updatedName = response.jsonPath().getString("name");
         Assert.assertEquals(updatedName, "Updated Station Name", "Station name not updated correctly");
     }
+    // Missing name (negative)
+    @Test(priority = 14)
+    public void testUpdateStation_MissingName() {
+        Response response = WeatherAPIRequestBuilder.UpdateStation_MissingName(
+                stationId, "UPD_MISSNAME_001", 40.71, -74.01, 200);
+
+        Assert.assertTrue(response.getStatusCode() == 400 || response.getStatusCode() == 422,
+                "Expected 400 or 422 for missing name, got: " + response.getStatusCode());
+        System.out.println("Response Missing Name: " + response.asString());
+    }
 }

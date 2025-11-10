@@ -51,6 +51,7 @@ public class WeatherAPIRequestBuilder {
     public static String getApiKeyIfPresent() {
         return findApiKey();
     }
+
     // Base URL should be host+version; endpoints appended per-request
     public static String WeatherBaseURL = "https://api.openweathermap.org/data/3.0";
     public static String lastStationId;
@@ -100,6 +101,7 @@ public class WeatherAPIRequestBuilder {
                 .then().log().all().extract().response();
         return response;
     }
+
     // Missing station name
     public static Response RegisterStation_MissingName(String externalId, double latitude, double longitude, int altitude) {
         Response response = given()
@@ -112,6 +114,7 @@ public class WeatherAPIRequestBuilder {
                 .then().log().all().extract().response();
         return response;
     }
+
     // Invalid latitude (string instead of number)
     public static Response RegisterStation_InvalidLatitude(String externalId, String name, String invalidLatitude, double longitude, int altitude) {
         Response response = given()
@@ -137,6 +140,7 @@ public class WeatherAPIRequestBuilder {
                 .then().log().all().extract().response();
         return response;
     }
+
     // Negative altitude
     public static Response RegisterStation_NegativeAltitude(String externalId, String name, double latitude, double longitude, int negativeAltitude) {
         Response response = given()
@@ -149,6 +153,7 @@ public class WeatherAPIRequestBuilder {
                 .then().log().all().extract().response();
         return response;
     }
+
     // Empty payload
     public static Response RegisterStation_EmptyPayload() {
         Response response = given()
@@ -161,6 +166,7 @@ public class WeatherAPIRequestBuilder {
                 .then().log().all().extract().response();
         return response;
     }
+
     //  Duplicate external_id
     public static Response RegisterStation_DuplicateExternalId(String existingExternalId, String name, double latitude, double longitude, int altitude) {
         Response response = given()
@@ -187,6 +193,7 @@ public class WeatherAPIRequestBuilder {
 
         return response;
     }
+
     // Get all stations
     public static Response GetAllStations() {
         return given()
@@ -198,7 +205,7 @@ public class WeatherAPIRequestBuilder {
                 .log().all()
                 .extract().response();
     }
-   // UPDATE STATION SECTION
+    // UPDATE STATION SECTION
 
     // Positive update — update station name or coordinates
     public static Response UpdateStation(String stationId, String externalId, String name, double latitude, double longitude, int altitude) {
@@ -207,6 +214,20 @@ public class WeatherAPIRequestBuilder {
                 .queryParam("appid", getApiKey())
                 .contentType("application/json")
                 .body(WeatherAPIPayloadBuilder.updateStationPayload(externalId, name, latitude, longitude, altitude).toString())
+                .log().all()
+                .put("/stations/" + stationId)
+                .then().log().all().extract().response();
+
+        return response;
+    }
+
+    // Negative: Missing name
+    public static Response UpdateStation_MissingName(String stationId, String externalId, double latitude, double longitude, int altitude) {
+        Response response = given()
+                .baseUri(WeatherBaseURL)
+                .queryParam("appid", getApiKey())
+                .contentType("application/json")
+                .body(WeatherAPIPayloadBuilder.updateStationMissingNamePayload(externalId, latitude, longitude, altitude).toString())
                 .log().all()
                 .put("/stations/" + stationId)
                 .then().log().all().extract().response();
