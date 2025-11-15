@@ -4,7 +4,6 @@ import org.json.JSONObject;
 
 public class WeatherAPIPayloadBuilder {
 
-    // -----------------------------
     // POSITIVE PAYLOAD:
     public static JSONObject registerStationPayload(
             String externalId,
@@ -13,15 +12,14 @@ public class WeatherAPIPayloadBuilder {
             double longitude,
             int altitude) {
 
-        // Create new JSON object
         JSONObject jsonObject = new JSONObject();
 
         // Add all fields dynamically
-        jsonObject.put("external_id", externalId);   // External ID (must be unique)
-        jsonObject.put("name", name);                // Station name
-        jsonObject.put("latitude", latitude);        // Latitude (-90 to 90)
-        jsonObject.put("longitude", longitude);      // Longitude (-180 to 180)
-        jsonObject.put("altitude", altitude);        // Altitude in meters
+        jsonObject.put("external_id", externalId);
+        jsonObject.put("name", name);
+        jsonObject.put("latitude", latitude);
+        jsonObject.put("longitude", longitude);
+        jsonObject.put("altitude", altitude);
 
         // Print the payload for logging
         System.out.println(" Positive Payload: " + jsonObject.toString());
@@ -40,12 +38,11 @@ public class WeatherAPIPayloadBuilder {
             int altitude) {
 
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("name", name);                // Name only
-        jsonObject.put("latitude", latitude);        // Latitude
-        jsonObject.put("longitude", longitude);      // Longitude
-        jsonObject.put("altitude", altitude);        // Altitude
+        jsonObject.put("name", name);
+        jsonObject.put("latitude", latitude);
+        jsonObject.put("longitude", longitude);
+        jsonObject.put("altitude", altitude);
 
-        // Print payload for debugging
         System.out.println("Missing external_id Payload: " + jsonObject.toString());
 
         return jsonObject;
@@ -59,10 +56,10 @@ public class WeatherAPIPayloadBuilder {
             int altitude) {
 
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("external_id", externalId);   // External ID only
-        jsonObject.put("latitude", latitude);        // Latitude
-        jsonObject.put("longitude", longitude);      // Longitude
-        jsonObject.put("altitude", altitude);        // Altitude
+        jsonObject.put("external_id", externalId);
+        jsonObject.put("latitude", latitude);
+        jsonObject.put("longitude", longitude);
+        jsonObject.put("altitude", altitude);
 
         System.out.println("Missing name Payload: " + jsonObject.toString());
 
@@ -80,7 +77,7 @@ public class WeatherAPIPayloadBuilder {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("external_id", externalId);
         jsonObject.put("name", name);
-        jsonObject.put("latitude", invalidLatitude); // invalid
+        jsonObject.put("latitude", invalidLatitude);
         jsonObject.put("longitude", longitude);
         jsonObject.put("altitude", altitude);
 
@@ -122,7 +119,7 @@ public class WeatherAPIPayloadBuilder {
         jsonObject.put("name", name);
         jsonObject.put("latitude", latitude);
         jsonObject.put("longitude", longitude);
-        jsonObject.put("altitude", negativeAltitude); // negative value
+        jsonObject.put("altitude", negativeAltitude);
 
         System.out.println("Negative altitude Payload: " + jsonObject.toString());
 
@@ -131,7 +128,7 @@ public class WeatherAPIPayloadBuilder {
 
     // Empty payload
     public static JSONObject emptyPayload() {
-        JSONObject jsonObject = new JSONObject(); // completely empty
+        JSONObject jsonObject = new JSONObject();
         System.out.println("Empty Payload: " + jsonObject.toString());
         return jsonObject;
     }
@@ -145,7 +142,7 @@ public class WeatherAPIPayloadBuilder {
             int altitude) {
 
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("external_id", existingExternalId); // duplicate
+        jsonObject.put("external_id", existingExternalId);
         jsonObject.put("name", name);
         jsonObject.put("latitude", latitude);
         jsonObject.put("longitude", longitude);
@@ -160,14 +157,12 @@ public class WeatherAPIPayloadBuilder {
     public static JSONObject createStationPayload(String externalId, String name, String latitude, String longitude, String altitude) {
         JSONObject json = new JSONObject();
         json.put("external_id", externalId); // Unique station ID
-        json.put("name", name); // Station name
-        json.put("latitude", latitude); // Latitude
-        json.put("longitude", longitude); // Longitude
-        json.put("altitude", altitude); // Altitude
+        json.put("name", name);
+        json.put("latitude", latitude);
+        json.put("longitude", longitude);
+        json.put("altitude", altitude); // A
         return json;
     }
-    // UPDATE STATION PAYLOADS
-
 
     // Positive Update Payload
     public static JSONObject updateStationPayload(
@@ -178,11 +173,11 @@ public class WeatherAPIPayloadBuilder {
             int altitude) {
 
         JSONObject json = new JSONObject();
-        json.put("external_id", externalId); // Unique station external ID
-        json.put("name", name);              // Updated station name
-        json.put("latitude", latitude);      // Updated latitude
-        json.put("longitude", longitude);    // Updated longitude
-        json.put("altitude", altitude);      // Updated altitude
+        json.put("external_id", externalId);
+        json.put("name", name);
+        json.put("latitude", latitude);
+        json.put("longitude", longitude);
+        json.put("altitude", altitude);
 
         System.out.println("Update Station Payload (Positive): " + json.toString());
         return json;
@@ -203,14 +198,14 @@ public class WeatherAPIPayloadBuilder {
     public static JSONObject updateStationInvalidLatitudePayload(
             String externalId,
             String name,
-            String invalidLatitude, // intentionally wrong type
+            String invalidLatitude,
             double longitude,
             int altitude) {
 
         JSONObject json = new JSONObject();
         json.put("external_id", externalId);
         json.put("name", name);
-        json.put("latitude", invalidLatitude); // wrong type
+        json.put("latitude", invalidLatitude);
         json.put("longitude", longitude);
         json.put("altitude", altitude);
 

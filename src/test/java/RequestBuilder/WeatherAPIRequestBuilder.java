@@ -13,29 +13,34 @@ import static io.restassured.RestAssured.given;
 
 public class WeatherAPIRequestBuilder {
 
-    // Return key if present in any supported location, otherwise null
+    // Find API key from env, system property, or local.properties
     private static String findApiKey() {
+
+        // 1. Environment variable
         String key = System.getenv("OPENWEATHER_API_KEY");
-        if (key != null && !key.isBlank()) return key.trim();
+        if (isValid(key)) return key;
 
+        // 2. JVM system property (-Dopenweather.api.key=XYZ)
         key = System.getProperty("openweather.api.key");
-        if (key != null && !key.isBlank()) return key.trim();
+        if (isValid(key)) return key;
 
-        // Look for local.properties in project root
-        String userDir = System.getProperty("user.dir");
-        File propFile = new File(userDir, "local.properties");
-        if (propFile.exists() && propFile.isFile()) {
-            Properties props = new Properties();
-            try (FileInputStream fis = new FileInputStream(propFile)) {
-                props.load(fis);
+        // 3. local.properties file
+        try {
+            File propFile = new File(System.getProperty("user.dir"), "local.properties");
+            if (propFile.exists()) {
+                Properties props = new Properties();
+                props.load(new FileInputStream(propFile));
                 key = props.getProperty("openweather.api.key");
-                if (key != null && !key.isBlank()) return key.trim();
-            } catch (IOException ignored) {
-                // ignore and fall through to return null
+                if (isValid(key)) return key;
             }
-        }
+        } catch (Exception ignored) {}
 
-        return null;
+        return null; // none found
+    }
+
+    // Small helper to avoid repeating checks
+    private static boolean isValid(String key) {
+        return key != null && !key.isBlank();
     }
 
     // Throwing getter kept for existing callers
@@ -205,7 +210,6 @@ public class WeatherAPIRequestBuilder {
                 .log().all()
                 .extract().response();
     }
-    // UPDATE STATION SECTION
 
     // Positive update — update station name or coordinates
     public static Response UpdateStation(String stationId, String externalId, String name, double latitude, double longitude, int altitude) {
@@ -304,7 +308,7 @@ public class WeatherAPIRequestBuilder {
         return response;
     }
 
-    // ✅ Confirm Deletion (Try to Get the Station again)
+    // Confirm Deletion
     public static Response ConfirmStationDeleted(String stationId) {
         System.out.println("Confirming deletion of Station ID: " + stationId);
         Response response = given()

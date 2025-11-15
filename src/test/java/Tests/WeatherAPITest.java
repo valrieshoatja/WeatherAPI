@@ -9,7 +9,6 @@ import org.testng.annotations.Test;
 
 public class WeatherAPITest {
 
-
     //  Store station ID
 
     static String stationId; //store id of created station
@@ -36,7 +35,7 @@ public class WeatherAPITest {
 
         Assert.assertEquals(response.getStatusCode(), 201, "Expected 201 Created");
 
-        // ✅ First try lowercase (because JsonPath converts keys to lowercase)
+        // First try lowercase (because JsonPath converts keys to lowercase)
         String stationId = response.jsonPath().getString("id");
         if (stationId == null || stationId.isEmpty()) {
             stationId = response.jsonPath().getString("ID");
