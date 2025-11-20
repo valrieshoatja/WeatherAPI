@@ -199,7 +199,7 @@ public class WeatherAPITest {
                 "Expected 400 or 422 for missing name, got: " + response.getStatusCode());
         System.out.println("Response Missing Name: " + response.asString());
     }
-    // Invalid latitude (negative)
+    // Invalid latitude
     @Test(priority = 15)
     public void testUpdateStation_InvalidLatitude() {
         Response response = WeatherAPIRequestBuilder.UpdateStation_InvalidLatitude(
@@ -208,7 +208,7 @@ public class WeatherAPITest {
         Assert.assertEquals(response.getStatusCode(), 400, "Expected 400 for invalid latitude");
         System.out.println("Invalid latitude update Response: " + response.asString());
     }
-    // Empty payload (negative)
+    // Empty payload
     @Test(priority = 16)
     public void testUpdateStation_EmptyPayload() {
         Response response = WeatherAPIRequestBuilder.UpdateStation_EmptyPayload(stationId);
@@ -216,13 +216,11 @@ public class WeatherAPITest {
         Assert.assertEquals(response.getStatusCode(), 400, "Expected 400 for empty update payload");
         System.out.println("Empty payload update Response: " + response.asString());
     }
-    // Invalid ID (negative)
+    // Invalid ID
     @Test(priority = 17)
     public void testDeleteInvalidStationId() {
-        // Negative test: delete non-existent station
+        //  delete non-existent station
         Response response = WeatherAPIRequestBuilder.DeleteStation_InvalidId("invalid_id_999");
-
-        // Print out details to debug
         System.out.println("Delete Invalid ID Response Code: " + response.getStatusCode());
         System.out.println("Delete Invalid ID Response Body: " + response.getBody().asString());
 
@@ -238,7 +236,7 @@ public class WeatherAPITest {
 
     @Test(priority = 18)
     public void testDeleteStationAndConfirm() {
-        // Step 1: Create a new station to delete
+        //  Create a new station to delete
         Response createResponse = WeatherAPIRequestBuilder.RegisterStation(
                 "EXT_DELETE_001", "Station to Delete", -25.746, 28.188, 1300);
         createResponse.then().statusCode(201);
@@ -247,13 +245,13 @@ public class WeatherAPITest {
         String stationId = createResponse.jsonPath().getString("ID");
         System.out.println("Created Station ID for Deletion: " + stationId);
 
-        // Step 2: Delete the station
+        //  Delete the station
         Response deleteResponse = WeatherAPIRequestBuilder.DeleteStation(stationId);
-        deleteResponse.then().statusCode(204); // Expect 204 No Content on successful delete
+        deleteResponse.then().statusCode(204);
 
-        // Step 3: Confirm deletion (try to GET again)
+        //  Confirm deletion
         Response confirmResponse = WeatherAPIRequestBuilder.ConfirmStationDeleted(stationId);
-        confirmResponse.then().statusCode(404); // Expect 404 Not Found
+        confirmResponse.then().statusCode(404);
 
         System.out.println("Station deletion confirmed for ID: " + stationId);
     }

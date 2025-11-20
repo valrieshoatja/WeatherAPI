@@ -5,57 +5,62 @@ import io.restassured.response.Response;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.Properties;
 
 import static io.restassured.RestAssured.given;
 
+import java.io.InputStream;
+import java.util.Properties;
 
 public class WeatherAPIRequestBuilder {
 
-    // Find API key from env, system property, or local.properties
+    private static final String PROP_NAME = "openweather.api.key";
+
     private static String findApiKey() {
 
-        // 1. Environment variable
+        // Env variable
         String key = System.getenv("OPENWEATHER_API_KEY");
         if (isValid(key)) return key;
 
-        // 2. JVM system property (-Dopenweather.api.key=XYZ)
-        key = System.getProperty("openweather.api.key");
+        // System property
+        key = System.getProperty(PROP_NAME);
         if (isValid(key)) return key;
 
-        // 3. local.properties file
-        try {
-            File propFile = new File(System.getProperty("user.dir"), "local.properties");
-            if (propFile.exists()) {
-                Properties props = new Properties();
-                props.load(new FileInputStream(propFile));
-                key = props.getProperty("openweather.api.key");
+        // src/test/resources/config/local.properties
+        try (InputStream input = WeatherAPIRequestBuilder.class
+                .getClassLoader()
+                .getResourceAsStream("config/local.properties")) {
+
+            if (input != null) {
+                Properties p = new Properties();
+                p.load(input);
+                key = p.getProperty(PROP_NAME);
                 if (isValid(key)) return key;
             }
         } catch (Exception ignored) {}
 
-        return null; // none found
+        return null;
     }
 
-    // Small helper to avoid repeating checks
-    private static boolean isValid(String key) {
-        return key != null && !key.isBlank();
+    private static boolean isValid(String v) {
+        return v != null && !v.isBlank();
     }
 
-    // Throwing getter kept for existing callers
+    public static String getApiKeyIfPresent() {
+        return findApiKey();
+    }
+
     private static String getApiKey() {
         String key = findApiKey();
-        if (key == null) {
-            throw new IllegalStateException("OpenWeather API key not set. Set env var OPENWEATHER_API_KEY, system property -Dopenweather.api.key=<key>, or add 'openweather.api.key=...' to local.properties in project root.");
+        if (!isValid(key)) {
+            throw new IllegalStateException(
+                    "API key missing. Add to src/test/resources/config/local.properties as:\n" +
+                            "openweather.api.key=YOUR_KEY"
+            );
         }
         return key;
     }
 
-    // Public non-throwing helper for tests/other callers to check presence
-    public static String getApiKeyIfPresent() {
-        return findApiKey();
-    }
 
     // Base URL should be host+version; endpoints appended per-request
     public static String WeatherBaseURL = "https://api.openweathermap.org/data/3.0";
